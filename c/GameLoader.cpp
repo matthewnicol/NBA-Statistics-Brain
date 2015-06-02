@@ -1,3 +1,13 @@
+//GameLoader -
+//  Go through the meetings folder (../meetings/) and insert every game file from the
+//  directory into memory. Record the time it takes, how many plays/games we have loaded
+//  for debugging purposes.
+//
+//  After games are loaded, pass the object to a GameHolder object so that it can handle
+//  things like searching etc without having to worry about the logic for loading the file.
+//
+//  This module is pretty much complete.
+
 #include "GameLoader.h"
 
 //create a new GameLoader and then fill it with plays

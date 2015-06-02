@@ -14,8 +14,6 @@ public:
   std::string teama, teamb, playtext;
 
   Play(std::string fname, std::string lineoftext);
-  bool occurs(int after);
-  bool occurs(int after, int before);
   bool isShot();
   bool isMake();
   bool isMiss();

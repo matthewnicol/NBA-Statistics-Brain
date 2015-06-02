@@ -1,9 +1,27 @@
-#include "Play.h"
-#include <iostream>
-#include <assert.h>
+//Play --
+//    Object that represents each individual play. 
+//
+//    Keep information about the game:
+//       -which teams were playing
+//       -what date
+//    keep information about the play itself:
+//       -when? quarter/timeleft
+//       -which of the teams caused this play?
+//       -textual description of the play.
+//
+//    Facilitate easy and fast access to data with low memory overhead.
+//
+//  NOTE: These plays were copied from the ESPN website by hand. There are only a few games (6),
+//        and they are all here just for testing purposes. I would never scrape from a website
+//        and you shouldn't either. Once a prototype is complete here I will purchase the play
+//        by play data somehow but I will not be able to share it here.
 
-//Constructor
+#include "Play.h"
+
 Play::Play(std::string fname, std::string lineoftext)
+//Constructor: Pass in filename (for deriving date and teams),
+//             and line of text (containing other play information).
+//             Parse this data in order to fill out all fields.
 {
   date = atoi(fname.substr(12, 8).c_str());
   teama = fname.substr(20, 3);
@@ -29,21 +47,12 @@ Play::Play(std::string fname, std::string lineoftext)
     else if (fields == 5) { sb += lineoftext.at(i); }
   } 
 
-  //any integer conversions
+  //integer conversions
   scorea = atoi(sa.c_str());
   scoreb = atoi(sb.c_str());
   teamcol = col.at(0);
   quarter = atoi(q.c_str());
   timeleft = atoi(tl.c_str());
-}
-
-
-bool Play::occurs(int afterThisDate) {
-  return date > afterThisDate;
-}
-
-bool Play::occurs(int afterThisDate, int beforeThisDate) {
-  return date > afterThisDate && date < beforeThisDate;
 }
 
 bool Play::isShot() {
@@ -85,7 +94,20 @@ bool Play::searchPlay(std::string pattern, bool isCaseSensitive) {
 }
 
 //COMPARISON OF PLAYS:
+//   I create a string of information and compare the two strings in order to
+//   determine whether a play occurrs before another play:
+//
+//    Example of a string:
+//      20150319CLECHA01309
+//      2015 = year
+//          03 = month
+//            19 = date
+//              CLE = (away?) team
+//                 CHA = other team
+//                    01 = quarter (overtimes are 5, 6, etc...)
+//                      309 = time left in the quarter at that point
 
+//Get string representation of the play for comparison
 std::string Play::toString() const{
   std::string quart = std::to_string(quarter);
   std::string time = std::to_string(timeleft);
@@ -95,6 +117,8 @@ std::string Play::toString() const{
   
   return std::to_string(date) + teama + teamb + quart + time;
 }
+
+//comparison operators
 
 bool operator==(Play &p1, Play &p2){
   return p1.toString().compare(p2.toString()) == 0;
