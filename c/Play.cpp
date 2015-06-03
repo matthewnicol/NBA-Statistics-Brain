@@ -18,6 +18,16 @@
 
 #include "Play.h"
 
+void clean(std::string &var) {
+  
+  while (var.substr(0,1) == " ") {
+    var = var.substr(1,var.size()-1); 
+  }
+  while (var.substr(var.size()-1,1) == " " || var.substr(var.size()-1,1) == "\n") {
+    var = var.substr(0, var.size()-1); 
+  }
+}
+
 Play::Play(std::string fname, std::string lineoftext)
 //Constructor: Pass in filename (for deriving date and teams),
 //             and line of text (containing other play information).
@@ -81,16 +91,81 @@ std::string Play::getOtherTeam() {
   else { return "2"; }
 }
 
-bool Play::searchPlay(std::string pattern, bool isCaseSensitive) {
-  if (isCaseSensitive) {
-    return playtext.find(pattern) != std::string::npos;
-  }
-  else {
+//search playtext 
+int Play::search(std::string pattern) const {
+  return playtext.find(pattern);
+}
+
+//convert both strings to lowercase in order to not get tripped up by capitals
+int Play::searchLower(std::string pattern) const {
     std::string tolower = playtext;
     std::transform(tolower.begin(), tolower.end(), tolower.begin(), ::tolower);
     std::transform(pattern.begin(), pattern.end(), pattern.begin(), ::tolower);
-    return tolower.find(pattern) != std::string::npos;
+    return tolower.find(pattern);
+  
+}
+
+//returns a vector containing the player entering the game & the player exiting the game
+std::vector<std::string> Play::getSubstitution() const { 
+  int pos;
+  std::vector<std::string> players; 
+
+  if ((pos = search(" enters the game for ")) != std::string::npos) { 
+    players.push_back(playtext.substr(0, pos));
+    players.push_back(playtext.substr(players[0].size()+20, len()-(players[0].size()+20))); 
+    clean(players[0]);
+    clean(players[1]);
+    //std::cout << "COMING IN:  " << players[0] << std::endl;
+    //std::cout << "COMING OUT: " << players[1] << std::endl;
   }
+
+  return players; 
+}
+
+int Play::len() const { return playtext.size(); }
+
+//returns vector containing the shooter and the assister, or ""
+std::vector<std::string> Play::getMakes() const { 
+  int pos;
+  std::vector<std::string> players;
+
+  if ((pos = search(" makes ")) != std::string::npos) { 
+    players.push_back(playtext.substr(0, pos));
+  
+    if ((pos = search(" assists ")) == std::string::npos) { 
+      int pos2 = search("(");
+      players.push_back(playtext.substr(pos2,len()-pos2));
+    }
+    else {
+      players.push_back("");
+    }
+  } 
+ 
+  return players;  
+}
+
+
+//returns a vector containing the shooter and the blocker, or ""
+std::vector<std::string> Play::getMisses() const {
+  int pos, pos2;
+  std::vector<std::string> players;
+  if ((pos = search(" makes ")) == std::string::npos) {  
+
+    if ((pos2 = search(" blocks ")) == std::string::npos) {
+      return players;
+    }
+    else {
+      pos = search("'s ");
+      players.push_back(playtext.substr(pos2+8,len()-(pos+8)));
+      players.push_back(playtext.substr(0,pos2));
+    } 
+  }
+  else {
+    players.push_back(playtext.substr(0,pos));
+    players.push_back("");  
+  }
+
+  return players;
 }
 
 //COMPARISON OF PLAYS:
