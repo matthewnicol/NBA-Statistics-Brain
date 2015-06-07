@@ -15,13 +15,7 @@ GameLoader::GameLoader() {
   totalGames = totalEmptyGames = totalPlays = 0;
   std::cout << "Loading in all games. Just a minute..." << std::endl;
 
-  clock_t t1, t2;
-  t1=clock();
-
-  loadInAllGames();
-
-  t2=clock();
-  loadTime = ((float)t2-(float)t1) / CLOCKS_PER_SEC;
+  DumbTimer timer("Load in all games.", true), loadInAllGames(), loadTime = timer.stop();
   std::cout << "Done." << std::endl;
 }
 

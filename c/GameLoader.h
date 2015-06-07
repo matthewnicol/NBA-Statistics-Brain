@@ -5,10 +5,10 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <fstream>
-#include <time.h>
 #include <iostream>
 
 #include "Play.h"
+#include "DumbTimer.h"
 
 class GameLoader
 {
