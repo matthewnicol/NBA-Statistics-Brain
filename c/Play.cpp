@@ -193,6 +193,9 @@ std::string Play::toString() const{
   return std::to_string(date) + teama + teamb + quart + time;
 }
 
+std::string Play::gameTitle() const{
+  return std::to_string(date) + teama + teamb;
+}
 //comparison operators
 
 bool operator==(Play &p1, Play &p2){

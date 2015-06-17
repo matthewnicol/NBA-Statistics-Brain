@@ -32,7 +32,7 @@ public:
   bool searchPlay(std::string pattern, bool isCaseSensitive);
 
   std::string toString() const;
-
+  std::string gameTitle() const;
   friend bool operator==(Play &p1, Play &p2);
   friend bool operator<(Play &p1, Play &p2);
   friend bool operator>(Play &p1, Play &p2);
