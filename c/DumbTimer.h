@@ -4,6 +4,7 @@
 #include <time.h>
 #include <string>
 #include <iostream>
+
 class DumbTimer
 {
 private:
@@ -12,8 +13,18 @@ private:
   float loadTime;
   bool autoprint;
 public:
-  DumbTimer(std::string taskname, bool doIPrint);
-  float stop(); 
+  DumbTimer(std::string taskname, bool doIPrint) {
+    task = taskname;
+    if ((autoprint = doIPrint)) { std::cout << "Beginning timer >>>> " << taskname << std::endl; }
+    start = clock();
+  };
+  float stop() {
+    loadTime = ((float)clock()-(float)start) / CLOCKS_PER_SEC;
+    if (autoprint) {
+      std::cout << task << " executed in " << loadTime << " seconds." << std::endl << std::endl;
+    }
+    return loadTime;
+  }; 
 };
 
 #endif

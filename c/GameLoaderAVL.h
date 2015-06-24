@@ -22,7 +22,6 @@ class GameLoaderAVL
 private:
   GameNode games[15000];
   GameNode *root = NULL;
-  std::vector<Play> findGame(std::string label);
   GameNode* AVLInsertGame(GameNode *newnode, GameNode *oldnode);
   GameNode* AVLRotateLeft(GameNode* n);
   GameNode* AVLRotateRight(GameNode *n);
@@ -34,6 +33,10 @@ private:
 public:
   std::vector<Play> *AVLGetGame(std::string gname);
   GameLoaderAVL();
+
+  std::vector<Play*> operator()(std::string game, std::string team, int quarter);
+  std::vector<Play*> operator()(std::string game, std::string team);
+  std::vector<Play*> operator()(std::string game, int quarter);
 };
 
 #endif

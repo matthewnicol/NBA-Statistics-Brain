@@ -1,44 +1,54 @@
 #ifndef PLAY_H
 #define PLAY_H
 
-#include <algorithm>
 #include <string>
-#include <iostream>
+
 class Play 
 {
 private:
   Play() {};
-  int len() const;
-public:
-  int date, timeleft;
+  int  len() const { return playtext.size(); };
   char quarter, teamcol;
+  std::string teama, teamb;
+  int date, timeleft;
   int scorea, scoreb;
-  std::string teama, teamb, playtext;
+public:
+  std::string playtext;
+  int getTime() const { return timeleft; };
+  Play(std::string fname, std::string lineoftext) {
+    date = atoi(fname.substr(12, 8).c_str());
+    teama = fname.substr(20, 3);
+    teamb = fname.substr(23);  
+    std::string q, tl, sa, sb, col;
 
-  Play(std::string fname, std::string lineoftext);
-  bool isShot();
-  bool isMake();
-  bool isMiss();
+    //iterate through string to get details within. 
+    int fields = 0;
+    for (int i = 0; i < lineoftext.length(); i++) {
+      if (lineoftext.at(i) == ',') { fields++; i++; }
+      else if (lineoftext.at(i) == '<' && lineoftext.at(i+1) == 'B' && lineoftext.at(i+2) == '>') { i+=2; } 
+      else if (lineoftext.at(i) == '\n') { break; }
 
-  int search(std::string pattern) const;
-  int searchLower(std::string pattern) const;
+      else if (fields == 0) { q += lineoftext.at(i); }
+      else if (fields == 1) { tl += lineoftext.at(i); }
+      else if (fields == 2) { col += lineoftext.at(i); }
+      else if (fields == 3) { playtext += lineoftext.at(i); }
+      else if (fields == 4) { sa += lineoftext.at(i); }
+      else if (fields == 5) { sb += lineoftext.at(i); }
+    } 
 
-  std::vector<std::string> getSubstitution() const;
-  std::vector<std::string> getMakes() const;
-  std::vector<std::string> getMisses() const;
+    scorea = atoi(sa.c_str());
+    scoreb = atoi(sb.c_str());
+    teamcol = col.at(0);
+    quarter = atoi(q.c_str());
+    timeleft = atoi(tl.c_str());
+  };
 
-  std::string getTeam();
-  std::string getOtherTeam();
-  bool searchPlay(std::string pattern, bool isCaseSensitive);
+  std::string getTeam()      const { if (teamcol != '2') { return (teamcol == '3') ? teama : teamb; } return "2"; };
+  std::string getOtherTeam() const { if (teamcol != '2') { return (teamcol == '3') ? teamb : teama; } return "2"; };
+  int qtr() const { return quarter; }
 
-  std::string toString() const;
-  std::string gameTitle() const;
-  friend bool operator==(Play &p1, Play &p2);
-  friend bool operator<(Play &p1, Play &p2);
-  friend bool operator>(Play &p1, Play &p2);
-  friend bool operator!=(Play &p1, Play &p2);
-  friend bool operator>=(Play &p1, Play &p2);
-  friend bool operator<=(Play &p1, Play &p2);
+  std::string gameTitle() const { return std::to_string(date) + teama + teamb; };
+
 };
 
 #endif

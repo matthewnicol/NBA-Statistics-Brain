@@ -135,3 +135,36 @@ int GameLoaderAVL::AVLCalcHeight(GameNode *g) {
   }
   else { return -1; }
 }
+
+std::vector<Play*> GameLoaderAVL::operator()(std::string game, std::string team, int quarter) {
+  std::vector<Play*> relevant;
+  auto plays = AVLGetGame(game);
+  for (std::vector<Play>::iterator iter = plays->begin(); iter != plays->end(); ++iter) {
+    if (iter->qtr() == quarter && iter->getTeam() == team) {
+      relevant.push_back(&(*iter));
+    }
+  }
+  return relevant; 
+}
+
+std::vector<Play*> GameLoaderAVL::operator()(std::string game, std::string team) {
+  std::vector<Play*> relevant;
+  auto plays = AVLGetGame(game);
+  for (std::vector<Play>::iterator iter = plays->begin(); iter != plays->end(); ++iter) {
+    if (iter->getTeam() == team) {
+      relevant.push_back(&(*iter));
+    }
+  }
+  return relevant; 
+}
+
+std::vector<Play*> GameLoaderAVL::operator()(std::string game, int quarter) {
+  std::vector<Play*> relevant;
+  auto plays = AVLGetGame(game);
+  for (std::vector<Play>::iterator iter = plays->begin(); iter != plays->end(); ++iter) {
+    if (iter->qtr() == quarter) {
+      relevant.push_back(&(*iter));
+    }
+  }
+  return relevant; 
+}
